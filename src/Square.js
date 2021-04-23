@@ -3,6 +3,7 @@ import React from 'react';
 const Square = props => {
    return (
       <button
+         style={props.background}
          className="square"
          onClick={() => props.onClick()}
       >
@@ -10,4 +11,4 @@ const Square = props => {
       </button>
    );
 };
-export default Square
+export default Square;

@@ -1,5 +1,4 @@
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -61,3 +60,20 @@ ol, ul {
   margin-left: 20px;
 }
 
+.history-list{
+  display: flex;
+  flex-direction: column;
+}
+
+.history-reverse{
+  flex-direction: column-reverse;
+}
+
+.btn-sort{
+  background: transparent;
+  padding: 3px;
+  border: 1px solid;
+  display: flex;
+  outline: none;
+  cursor: pointer;
+}

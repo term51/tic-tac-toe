@@ -12,13 +12,41 @@ export function calculateWinner(squares) {
    for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-         return 'Winner: ' + squares[a];
+         return {
+            text: 'Winner: ' + squares[a],
+            coordinates: lines[i]
+         };
       }
    }
 
    if (!squares.includes(null)) {
-      return 'Draw';
+      return {text: 'Draw'};
    }
 
    return null;
+}
+
+export function getCoordinates(index) {
+   switch (index) {
+      case 0:
+         return '1:1';
+      case 1:
+         return '1:2';
+      case 2:
+         return '1:3';
+      case 3:
+         return '2:1';
+      case 4:
+         return '2:2';
+      case 5:
+         return '2:3';
+      case 6:
+         return '3:1';
+      case 7:
+         return '3:2';
+      case 8:
+         return '3:3';
+      default:
+         return null;
+   }
 }

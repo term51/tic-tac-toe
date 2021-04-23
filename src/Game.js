@@ -1,16 +1,20 @@
 import React from 'react';
 import Board from './Board';
-import {calculateWinner} from './helpers';
+import {calculateWinner, getCoordinates} from './helpers';
+import {FaSortAmountDown, FaSortAmountDownAlt} from 'react-icons/all';
 
 export default class Game extends React.Component {
    constructor(props) {
       super(props);
       this.state = {
          history: [{
-            squares: Array(9).fill(null)
+            squares: Array(9).fill(null),
+            coordinates: null,
+            select: false
          }],
          xIsNext: true,
-         stepNumber: 0
+         stepNumber: 0,
+         isReverseSort: false
       };
    }
 
@@ -24,7 +28,9 @@ export default class Game extends React.Component {
       squares[i] = this.state.xIsNext ? 'X' : 'O';
       this.setState({
          history: history.concat([{
-            squares
+            squares,
+            coordinates: getCoordinates(i),
+            select: false
          }]),
          stepNumber: history.length,
          xIsNext: !this.state.xIsNext
@@ -38,6 +44,23 @@ export default class Game extends React.Component {
       });
    }
 
+   paintButton(move) {
+      const history = this.state.history.concat();
+      history.forEach((item, index) => {
+         item.select = move === index;
+      });
+
+      this.setState({
+         history
+      });
+   }
+
+   toggleSort() {
+      this.setState({
+         isReverseSort: !this.state.isReverseSort
+      });
+   }
+
    render() {
       const history = this.state.history;
       const current = history[this.state.stepNumber];
@@ -45,20 +68,36 @@ export default class Game extends React.Component {
 
       const moves = history.map((step, move) => {
          const desc = move
-            ? 'Перейти к ходу #' + move
-            : 'К началу игры';
+            ? 'Go to move #' + move
+            : 'Go to game start';
          return (
             <li key={move}>
-               <button onClick={() => this.jumpTo(move)}>{desc}</button>
+               {step.coordinates}
+               <button onClick={() => {
+                  this.jumpTo(move);
+                  this.paintButton(move);
+               }}
+                       style={step.select ? {backgroundColor: 'aqua'} : null}
+               >{desc}</button>
             </li>
          );
       });
 
       let status;
       if (winner) {
-         status = winner;
+         status = winner.text;
+         if (winner.coordinates) {
+            current.squares.winner = winner.coordinates;
+         }
       } else {
          status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      }
+
+
+      const historyClasses = ['history-list'];
+
+      if (this.state.isReverseSort) {
+         historyClasses.push('history-reverse');
       }
 
       return (
@@ -70,8 +109,11 @@ export default class Game extends React.Component {
                />
             </div>
             <div className="game-info">
+               <button className="btn-sort" onClick={() => this.toggleSort()}>
+                  {this.state.isReverseSort ? <FaSortAmountDown/> : <FaSortAmountDownAlt/>}
+               </button>
                <div>{status}</div>
-               <ol>{moves}</ol>
+               <ol className={historyClasses.join(' ')}>{moves}</ol>
             </div>
          </div>
       );
