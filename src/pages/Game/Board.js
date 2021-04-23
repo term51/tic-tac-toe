@@ -1,6 +1,6 @@
 import React from 'react';
 import Square from './Square';
-import {GAME_FIELD} from './settings';
+import {GAME_FIELD} from '../../settings';
 
 
 export default class Board extends React.Component {

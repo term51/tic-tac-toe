@@ -1,6 +1,7 @@
 import React from 'react';
+import classes from './Game.module.scss'
 import Board from './Board';
-import {calculateWinner, getCoordinates} from './helpers';
+import {calculateWinner, getCoordinates} from '../../helpers/helpers';
 import {FaSortAmountDown, FaSortAmountDownAlt} from 'react-icons/all';
 
 export default class Game extends React.Component {
@@ -101,7 +102,7 @@ export default class Game extends React.Component {
       }
 
       return (
-         <div className="game">
+         <div className={classes.Game}>
             <div className="game-board">
                <Board
                   squares={current.squares}
