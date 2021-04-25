@@ -3,34 +3,31 @@ import Square from './Square';
 import {GAME_FIELD} from '../../settings';
 
 
-export default class Board extends React.Component {
-
-   renderSquare(i) {
-      console.log();
-      const backgroundColor = {};
-      if (this.props.squares.winner) {
-         if (this.props.squares.winner.includes(i)) {
-            backgroundColor.background = 'blue';
+const Board = props => {
+   function renderSquare(i) {
+      let winner = false;
+      if (props.winnerCoordinates) {
+         if (props.winnerCoordinates.includes(i)) {
+            winner = true;
          }
       }
 
       return <Square
          key={i}
-         value={this.props.squares[i]}
-         onClick={() => this.props.onClick(i)}
-         background={backgroundColor}
+         value={props.squares[i]}
+         onSquareClick={() => props.onSquareClick(i)}
+         winner={winner}
       />;
-   };
-
-   render() {
-      return (
-         <div>
-            {[...Array(GAME_FIELD.rows).keys()].map((row) => (
-               <div className="board-row" key={row}>
-                  {[...Array(GAME_FIELD.cells).keys()].map(cell => this.renderSquare(row * GAME_FIELD.cells + cell))}
-               </div>
-            ))}
-         </div>
-      );
    }
+
+   return (
+      <div>
+         {[...Array(GAME_FIELD.rows).keys()].map((row) => (
+            <div className="board-row" key={row}>
+               {[...Array(GAME_FIELD.cells).keys()].map(cell => renderSquare(row * GAME_FIELD.cells + cell))}
+            </div>
+         ))}
+      </div>
+   );
 };
+export default Board;

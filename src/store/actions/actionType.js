@@ -1,0 +1,4 @@
+export const GAME_SET_STATE = 'GAME_SET_STATE';
+export const GAME_TOGGLE_SORT = 'GAME_TOGGLE_SORT';
+export const GAME_JUMP_TO = 'GAME_JUMP_TO';
+export const GAME_SAVE_HISTORY = 'GAME_SAVE_HISTORY';

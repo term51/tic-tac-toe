@@ -1,11 +1,17 @@
 import React from 'react';
+import classes from './Square.module.scss';
 
 const Square = props => {
+   const cls = [classes.Square];
+
+   if (props.winner){
+      cls.push(classes['winner'])
+   }
+
    return (
       <button
-         style={props.background}
-         className="square"
-         onClick={() => props.onClick()}
+         className={cls.join(' ')}
+         onClick={() => props.onSquareClick()}
       >
          {props.value}
       </button>

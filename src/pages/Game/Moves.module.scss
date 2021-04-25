@@ -1,0 +1,17 @@
+.btn-moves {
+   background-color: #ffffff;
+   cursor: pointer;
+
+   &.active {
+      background-color: #a1f045;
+   }
+}
+
+.history-list {
+   display: flex;
+   flex-direction: column;
+
+   &.reverse {
+      flex-direction: column-reverse;
+   }
+}
