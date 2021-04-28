@@ -1,39 +1,29 @@
 import React from 'react';
-import GameLayout from './hoc/layouts/Game/GameLayout';
+
 import Game from './pages/Game/Game';
-import {connect} from 'react-redux';
+import Settings from './pages/Settings/Settings';
 
 import {Redirect, Route, Switch} from 'react-router-dom';
 
-class App extends React.Component {
+const App = () => {
 
-   render() {
-      let routes = (
-         <Switch>
-            <Route path="/auth"/>
-            <Route path="/settings"/>
-            <Route path="/" exact component={Game}/>
-            <Redirect to="/"/>
-         </Switch>
-      );
+   let routes = (
+      <Switch>
+         <Route path="/auth"/>
+         <Route path="/settings" component={Settings}/>
+         <Route path="/" exact component={Game}/>
+         <Redirect to="/"/>
+      </Switch>
+   );
 
-      // TODO isAuthenticated
+   // TODO isAuthenticated
 
-      return (
-         <GameLayout>
-            {routes}
-         </GameLayout>
-      );
-   }
-}
+   return (
+      <React.Fragment>
+         {routes}
+      </React.Fragment>
+   );
+};
 
 
-function mapStateToProps(state) {
-   return {};
-}
-
-function mapDispatchToProps(dispatch) {
-   return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

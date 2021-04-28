@@ -9,11 +9,16 @@ import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
 import rootReducer from './store/rootReducer';
 import thunk from 'redux-thunk';
+import {AITurnMiddleware} from './middleware/AITurnMiddleware';
 
 const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(
+   thunk,
+    AITurnMiddleware
+)));
 
 // TODO добавить:
 //  -страницу настроек
@@ -21,7 +26,6 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 //  -подумать по поводу увеличения клеток
 //  -обработку ошибок
 //  -авторизацию
-//  -UI framework для всплывающих окон
 //  -анимацию
 
 ReactDOM.render(

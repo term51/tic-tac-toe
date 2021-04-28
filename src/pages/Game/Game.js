@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Game.module.scss';
+import GameLayout from '../../hoc/layouts/Game/GameLayout';
 import Board from './Board';
 import {connect} from 'react-redux';
 import {gameSquareClick, gameJumpTo, gameToggleSort, highlightHistoryButton} from '../../store/actions/game';
@@ -7,6 +8,7 @@ import SortButton from './SortButton';
 import Status from './Status';
 import Moves from './Moves';
 import {calculateWinner} from '../../helpers/helpers';
+import Side from './Side/Side';
 
 class Game extends React.Component {
    render() {
@@ -15,41 +17,45 @@ class Game extends React.Component {
       const winner = calculateWinner(current.squares);
 
       return (
-         <div className={classes.Game}>
-            <div className="game-board">
-               <Board
-                  squares={current.squares}
-                  onSquareClick={this.props.gameSquareClick}
-                  winnerCoordinates={winner?.coordinates}
-               />
+         <GameLayout>
+            <div className={classes.Game}>
+               <div className="game-board">
+                  <Board
+                     squares={current.squares}
+                     onSquareClick={this.props.gameSquareClick}
+                     winnerCoordinates={winner?.coordinates}
+                  />
+               </div>
+               <div className="game-info">
+                  {this.props.gameMode === 2 ? <Side/> : null}
+                  <SortButton
+                     isReverseSort={this.props.isReverseSort}
+                     onToggleSort={this.props.gameToggleSort}
+                  />
+                  <Status
+                     currentSquires={current.squares}
+                     xIsNext={this.props.xIsNext}
+                  />
+                  <Moves
+                     onJumpTo={this.props.gameJumpTo}
+                     onHighlight={this.props.highlightHistoryButton}
+                     history={this.props.history}
+                     isReverseSort={this.props.isReverseSort}
+                  />
+               </div>
             </div>
-            <div className="game-info">
-               <SortButton
-                  isReverseSort={this.props.isReverseSort}
-                  onToggleSort={this.props.gameToggleSort}
-               />
-               <Status
-                  currentSquires={current.squares}
-                  xIsNext={this.props.xIsNext}
-               />
-               <Moves
-                  onJumpTo={this.props.gameJumpTo}
-                  onHighlight={this.props.highlightHistoryButton}
-                  history={this.props.history}
-                  isReverseSort={this.props.isReverseSort}
-               />
-            </div>
-         </div>
+         </GameLayout>
       );
    }
 }
 
-function mapStateToProps({game}) {
+function mapStateToProps({game, settings}) {
    return {
       history: game.history,
       xIsNext: game.xIsNext,
       stepNumber: game.stepNumber,
-      isReverseSort: game.isReverseSort
+      isReverseSort: game.isReverseSort,
+      gameMode: settings.gameMode
    };
 }
 

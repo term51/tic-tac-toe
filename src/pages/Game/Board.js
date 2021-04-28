@@ -1,6 +1,6 @@
 import React from 'react';
 import Square from './Square';
-import {GAME_FIELD} from '../../settings';
+import {FIELD_SIZES} from '../../config';
 
 
 const Board = props => {
@@ -20,11 +20,12 @@ const Board = props => {
       />;
    }
 
+//TODO  change FIELD_SIZES[0]
    return (
       <div>
-         {[...Array(GAME_FIELD.rows).keys()].map((row) => (
+         {[...Array(FIELD_SIZES[0].rows).keys()].map((row) => (
             <div className="board-row" key={row}>
-               {[...Array(GAME_FIELD.cells).keys()].map(cell => renderSquare(row * GAME_FIELD.cells + cell))}
+               {[...Array(FIELD_SIZES[0].cells).keys()].map(cell => renderSquare(row * FIELD_SIZES[0].cells + cell))}
             </div>
          ))}
       </div>

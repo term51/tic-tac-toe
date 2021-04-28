@@ -64,3 +64,27 @@ export function saveGameHistory(history) {
       history
    };
 }
+
+export function AITurn() {
+   return (dispatch, getState) => {
+      console.log('AI turn');
+      const state = getState().game;
+      const AIAvailableMoves = [];
+      const current = state.history[state.stepNumber];
+
+      for (let ii = 0; ii < current.squares.length; ii++) {
+         if (current.squares[ii] === null) {
+            AIAvailableMoves.push(ii);
+         }
+      }
+
+      console.log('AIAvailableMoves', AIAvailableMoves);
+
+      if (AIAvailableMoves.length > 0) {
+         let AIChoice = Math.round(Math.random() * AIAvailableMoves.length);
+         console.log('AIChoice index', AIChoice);
+
+         dispatch(gameSquareClick(AIAvailableMoves[AIChoice]));
+      }
+   };
+}

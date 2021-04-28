@@ -1,15 +1,37 @@
 import React from 'react';
 import classes from './GameLayout.module.scss';
-import {connect} from 'react-redux';
+import Navbar from '../../../components/UI/Navbar';
 
-class GameLayout extends React.Component {
-   render() {
-      return (
-         <div className={classes.GameLayout}>
-            {this.props.children}
+const GameLayout = props => {
+   return (
+      <div className={classes.GameLayout}>
+         <header className="header mb-4" style={{backgroundColor: '#343a40'}}>
+            <div className="container">
+               <div className="row">
+                  <div className="col-12">
+                     <Navbar/>
+                  </div>
+               </div>
+            </div>
+         </header>
+         <div className="container">
+            <div className="row">
+               <div className="col-12">
+                  {props.children}
+               </div>
+            </div>
          </div>
-      );
-   }
-}
+         <footer className="footer">
+            <div className="container">
+               <div className="row">
+                  <div className="col-12">
 
-export default connect()(GameLayout);
+                  </div>
+               </div>
+            </div>
+         </footer>
+      </div>
+   );
+};
+
+export default GameLayout;
