@@ -1,21 +1,27 @@
 import React from 'react';
 import Square from './Square';
-import {FIELD_SIZES} from '../../config';
+// import {FIELD_SIZES} from '../../config';
 
 
 const Board = props => {
-   function renderSquare(i) {
+   function renderSquare(coordinates) {
       let winner = false;
       if (props.winnerCoordinates) {
-         if (props.winnerCoordinates.includes(i)) {
+         if (props.winnerCoordinates.includes(coordinates)) {
             winner = true;
          }
       }
 
+      const splitCoordinates = coordinates.split(':');
+      const value = props.squares[splitCoordinates[0]][splitCoordinates[1]];
+
       return <Square
-         key={i}
-         value={props.squares[i]}
-         onSquareClick={() => props.onSquareClick(i)}
+         key={coordinates}
+         // key={i}
+         value={value}
+         // value={props.squares[i]}
+         onSquareClick={() => props.onSquareClick(coordinates)}
+         // onSquareClick={() => props.onSquareClick(i)}
          winner={winner}
       />;
    }
@@ -23,9 +29,10 @@ const Board = props => {
 //TODO  change FIELD_SIZES[0]
    return (
       <div>
-         {[...Array(FIELD_SIZES[0].rows).keys()].map((row) => (
+         {[...Array(props.fieldSize).keys()].map((row) => (
             <div className="board-row" key={row}>
-               {[...Array(FIELD_SIZES[0].cells).keys()].map(cell => renderSquare(row * FIELD_SIZES[0].cells + cell))}
+               {[...Array(props.fieldSize).keys()].map(cell => renderSquare(`${row}:${cell}`))}
+               {/*{[...Array(props.fieldSize).keys()].map(cell => renderSquare(row * props.fieldSize + cell))}*/}
             </div>
          ))}
       </div>

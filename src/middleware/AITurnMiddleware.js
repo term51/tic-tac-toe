@@ -1,5 +1,4 @@
 import {GAME_SET_STATE} from '../store/actions/actionType';
-import {AITurn} from '../store/actions/game';
 import AI from '../AI/AI.js';
 
 export const AITurnMiddleware = store => next => action => {
@@ -11,9 +10,12 @@ export const AITurnMiddleware = store => next => action => {
       const state = store.getState();
       // if (!state.game.xIsNext && state.settings.gameMode === 2) {
       if (!state.game.xIsNext) {
-         const robot = new AI(store);
-         robot.makeMove()
+         let AIPlayer = new AI(store);
+         AIPlayer.makeMove();
+         AIPlayer = null;
+         // Класс должен быть создан 1 раз
       }
    }
    return result;
 };
+

@@ -3,18 +3,15 @@ import {AI_EASY, AI_HARD, AI_MEDIUM, ONE_PLAYER_MODE, ONLINE_MODE, PLAYER_VS_AI_
 export const FIELD_SIZES = [
       {
          name: '3x3',
-         rows: 3,
-         cells: 3
+         size: 3,
       },
       {
          name: '4x4',
-         rows: 4,
-         cells: 4
+         size:4
       },
       {
          name: '5x5',
-         rows: 5,
-         cells: 5
+         size: 5,
       }
    ]
 ;

@@ -1,8 +1,12 @@
 import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_STATE, GAME_TOGGLE_SORT} from '../actions/actionType';
+import {FIELD_SIZES} from '../../config';
+
+const fieldLength = FIELD_SIZES[0].size;
 
 const initialState = {
    history: [{
-      squares: Array(9).fill(null),
+      // squares: Array(9).fill(null),
+      squares: Array(fieldLength).fill(Array(fieldLength).fill(null)),
       coordinates: null,
       select: false
    }],
@@ -10,6 +14,7 @@ const initialState = {
    stepNumber: 0,
    isReverseSort: false
 };
+console.log('initialState', initialState);
 
 export default function gameReducer(state = initialState, action) {
    switch (action.type) {

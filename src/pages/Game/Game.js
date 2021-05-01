@@ -21,6 +21,7 @@ class Game extends React.Component {
             <div className={classes.Game}>
                <div className="game-board">
                   <Board
+                     fieldSize={this.props.fieldSize}
                      squares={current.squares}
                      onSquareClick={this.props.gameSquareClick}
                      winnerCoordinates={winner?.coordinates}
@@ -55,13 +56,14 @@ function mapStateToProps({game, settings}) {
       xIsNext: game.xIsNext,
       stepNumber: game.stepNumber,
       isReverseSort: game.isReverseSort,
-      gameMode: settings.gameMode
+      gameMode: settings.gameMode,
+      fieldSize: settings.fieldSize
    };
 }
 
 function mapDispatchToProps(dispatch) {
    return {
-      gameSquareClick: i => dispatch(gameSquareClick(i)),
+      gameSquareClick: coordinates => dispatch(gameSquareClick(coordinates)),
       gameToggleSort: () => dispatch(gameToggleSort()),
       gameJumpTo: (step) => dispatch(gameJumpTo(step)),
       highlightHistoryButton: (move) => dispatch(highlightHistoryButton(move))

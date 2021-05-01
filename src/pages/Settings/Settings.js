@@ -14,10 +14,10 @@ class Settings extends React.Component {
 
    renderCustomRadio({name, id, value, settingName}, fn) {
       let checked;
-      if (Number.isFinite(value)) {
-         checked = value === this.props.gameMode;
+      if (name === 'fieldSize') {
+         checked = value === this.props.fieldSize;
       } else {
-         checked = value === (this.props.fieldSize.rows + 'x' + this.props.fieldSize.cells);
+         checked = value === this.props.gameMode;
       }
 
       return <CustomRadio
@@ -40,7 +40,7 @@ class Settings extends React.Component {
                   {FIELD_SIZES.map((setting, index) => (
                      this.renderCustomRadio({
                            name: 'fieldSize',
-                           value: setting.name,
+                           value: setting.size,
                            id: 'fieldSize' + index,
                            settingName: setting.name
                         },
@@ -82,10 +82,7 @@ class Settings extends React.Component {
 
 function mapStateToProps({settings}) {
    return {
-      fieldSize: {
-         rows: settings.fieldSize.rows,
-         cells: settings.fieldSize.cells
-      },
+      fieldSize: settings.fieldSize,
       gameMode: settings.gameMode,
       AIDifficulty: settings.AIDifficulty
    };
