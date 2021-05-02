@@ -8,8 +8,8 @@ export const AITurnMiddleware = store => next => action => {
    if (action.type === GAME_SET_STATE) {
 
       const state = store.getState();
-      // if (!state.game.xIsNext && state.settings.gameMode === 2) {
-      if (!state.game.xIsNext) {
+      if (!state.game.xIsNext && state.settings.gameMode === 2) {
+      // if (!state.game.xIsNext) {
          let AIPlayer = new AI(store);
          AIPlayer.makeMove();
          AIPlayer = null;
