@@ -15,13 +15,14 @@ import Status from './Status';
 import Moves from './Moves';
 import {calculateWinner} from '../../helpers/helpers';
 import Side from './Side';
+import {PLAYER_VS_AI_MODE} from '../../constants';
 
 class Game extends React.Component {
    render() {
       const history = this.props.history;
       const current = history[this.props.stepNumber];
       const winner = calculateWinner(current.squares);
-      console.log((this.props.stepNumber));
+
       return (
          <GameLayout>
             <div className={classes.Game}>
@@ -35,7 +36,7 @@ class Game extends React.Component {
                </div>
                <div className="game-info">
                   {
-                     this.props.gameMode === 2
+                     this.props.gameMode === PLAYER_VS_AI_MODE
                         ? <Side
                            playerSide={this.props.playerSide}
                            disabled={this.props.stepNumber > 0}

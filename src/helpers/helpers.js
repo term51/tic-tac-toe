@@ -33,7 +33,6 @@ export function calculateWinner(squares) {
       index++;
       lines.push(row);
    }
-   // console.log('auto', lines);
 
    // const lines = [
    //    ['0:0', '0:1', '0:2'],

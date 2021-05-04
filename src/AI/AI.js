@@ -1,5 +1,5 @@
 import {gameSquareClick} from '../store/actions/game';
-import {AI_EASY, AI_HARD, AI_MEDIUM} from '../constants';
+import {AI_EASY, AI_HARD, AI_MEDIUM, FIRST_PLAYER, SECOND_PLAYER} from '../constants';
 
 export default class AI {
    constructor(store) {
@@ -7,31 +7,13 @@ export default class AI {
       this.state = store.getState();
       this.currentIndex = null;
 
-      // this.field = [
-      //    ['X', null, null],
-      //    ['O', null, 'O'],
-      //    ['X', 'X', null]
-      // ];
-
       const currentHistory = this.state.game.history[this.state.game.stepNumber];
       this.field = currentHistory.squares;
 
-      // стейт
-
-      this.AIPlayer = 'O';
-      this.Player = 'X';
+      this.AIPlayer = this.state.game.playerSide === SECOND_PLAYER ? FIRST_PLAYER : SECOND_PLAYER;
+      this.Player = this.state.game.playerSide;
       this.enemy = null;
 
-      // this.AIPlayerUnits = [
-      // {
-      //    coordinates: '1:0',
-      //    ways: []
-      // },
-      // {
-      //    coordinates: '1:2',
-      //    ways: []
-      // }
-      // ];
       this.AIPlayerUnits = this.getPlayerMoves(this.AIPlayer);
       this.PlayerUnits = this.getPlayerMoves(this.Player);
 
@@ -56,7 +38,6 @@ export default class AI {
 
    makeMove() {
       const AIMoves = this.getAvailableMoves();
-      console.log('AIAvailableMoves ', AIMoves);
 
       if (this.isAvailableMoves(AIMoves)) {
          const AIChoice = this._AIMakeChoice(AIMoves);
@@ -66,12 +47,9 @@ export default class AI {
       }
    }
 
-
    getAvailableMoves() {
       const result = [];
       const currentHistory = this.state.game.history[this.state.game.stepNumber];
-
-
       currentHistory.squares.forEach((row, rowIndex) => {
          row.forEach((cell, cellIndex) => {
             if (this.field[rowIndex][cellIndex] === null) {
@@ -80,11 +58,6 @@ export default class AI {
          });
       });
 
-      // for (let i = 0; i < currentHistory.squares.length; i++) {
-      //    if (currentHistory.squares[i] === null) {
-      //       result.push(i);
-      //    }
-      // }
       return result;
    }
 
@@ -95,6 +68,7 @@ export default class AI {
    _AIMakeChoice(moves) {
       const AIDifficulty = this.getAIDifficulty();
       if (AIDifficulty === AI_EASY) return this._makeEasyChoice(moves);
+      if (this._isFirstTimeChoice()) return this._makeMoveInCenter(moves);
       if (AIDifficulty === AI_MEDIUM) return this._makeMediumChoice(moves);
       if (AIDifficulty === AI_HARD) return this._makeHardChoice(moves);
    }
@@ -103,79 +77,49 @@ export default class AI {
       return this.state.settings.AIDifficulty;
    }
 
+   _isFirstTimeChoice() {
+      return this.AIPlayerUnits.length === 0;
+   }
+
+   _makeMoveInCenter(moves) {
+      const center = this._getCenterCoordinates();
+      // если центр не занят - занять
+      if (this.field[center][center] === null) {
+         return moves.indexOf(`${center}:${center}`);
+      }
+      // если центр занят сделать рандомный ход
+      return this._makeRandomMove(moves);
+   }
+
    _makeEasyChoice(moves) {
       return this._makeRandomMove(moves);
    }
 
    _makeMediumChoice(moves) {
-      // если AI ходит первый раз
-      if (this.AIPlayerUnits.length === 0) {
-         const center = this._getCenterCoordinates();
-         // если центр не занят - занять
-         if (this.field[center][center] === null) {
-            return moves.indexOf(`${center}:${center}`);
-         }
-         // если центр занят сделать рандомный ход
-         return this._makeRandomMove(moves);
-      }
-
-      this.AIPlayerUnits.forEach(({coordinates}, index) => {
-         this.enemy = 'X';
-         this.currentIndex = index;
-         const splitCoordinate = coordinates.split(':');
-         this._getHorizontalWay(splitCoordinate[0]);
-         this._getVerticalWay(splitCoordinate[1]);
-         this._getFirstDiagonalWay(coordinates);
-         this._getSecondDiagonalWay(coordinates);
-      });
-
+      this._getAllWays(this.AIPlayerUnits, this.Player);
       this._calculateWaypoints(this.AIPlayerUnits);
-
       const possibleMoves = this._getWayWithMaximumPoints();
 
       for (let i = 0; i < possibleMoves.length; i++) {
          if (moves.includes(possibleMoves[i])) return moves.indexOf(possibleMoves[i]);
       }
-
       return this._makeRandomMove(moves);
    }
 
+
    _makeHardChoice(moves) {
-      console.log('hard', moves);
       // если AI ходит первый раз
-      if (this.AIPlayerUnits.length === 0) {
-         const center = this._getCenterCoordinates();
-         // если центр не занят - занять
-         if (this.field[center][center] === null) {
-            return moves.indexOf(`${center}:${center}`);
-         }
-         // если центр занят сделать рандомный ход
-         return this._makeRandomMove(moves);
+      if (this._isFirstTimeChoice()) {
+         this._makeMoveInCenter(moves);
       }
-
-      this.AIPlayerUnits.forEach(({coordinates}, index) => {
-         this.enemy = 'X';
-         this.currentIndex = index;
-         const splitCoordinate = coordinates.split(':');
-         this._getHorizontalWay(splitCoordinate[0]);
-         this._getVerticalWay(splitCoordinate[1]);
-         this._getFirstDiagonalWay(coordinates);
-         this._getSecondDiagonalWay(coordinates);
-      });
-
-      this.PlayerUnits.forEach(({coordinates}, index) => {
-         this.enemy = 'O';
-         this.currentIndex = index;
-         const splitCoordinate = coordinates.split(':');
-         this._getHorizontalWay(splitCoordinate[0]);
-         this._getVerticalWay(splitCoordinate[1]);
-         this._getFirstDiagonalWay(coordinates);
-         this._getSecondDiagonalWay(coordinates);
-      });
+      // TODO оптимизировать при переносе в redux
+      this._getAllWays(this.AIPlayerUnits, this.Player);
+      this._getAllWays(this.PlayerUnits, this.AIPlayer);
 
       this._calculateWaypoints(this.AIPlayerUnits);
       this._calculateWaypoints(this.PlayerUnits);
-
+      // console.log('AIPlayerUnits', this.AIPlayerUnits);
+      // console.log('PlayerUnits', this.PlayerUnits);
       const possibleMoves = this._getWayWithMaximumPoints();
 
       for (let i = 0; i < possibleMoves.length; i++) {
@@ -191,6 +135,18 @@ export default class AI {
 
    _getCenterCoordinates() {
       return Math.floor(this.state.settings.fieldSize / 2);
+   }
+
+   _getAllWays(playerUnits, playerMark) {
+      playerUnits.forEach(({coordinates}, index) => {
+         this.enemy = playerMark;
+         this.currentIndex = index;
+         const splitCoordinate = coordinates.split(':');
+         this._getHorizontalWay(splitCoordinate[0]);
+         this._getVerticalWay(splitCoordinate[1]);
+         this._getFirstDiagonalWay(coordinates);
+         this._getSecondDiagonalWay(coordinates);
+      });
    }
 
    _getHorizontalWay(coordinates) {
@@ -244,7 +200,7 @@ export default class AI {
 
    _addWay(way) {
       // TODO: переделать
-      if (this.enemy === 'X') {
+      if (this.enemy !== this.AIPlayer) {
          this.AIPlayerUnits[this.currentIndex].ways.push({
             points: 0,
             way

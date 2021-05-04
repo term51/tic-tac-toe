@@ -1,9 +1,8 @@
 import React from 'react';
 import CustomRadio from '../../components/UI/CustomRadio';
+import {FIRST_PLAYER, SECOND_PLAYER} from '../../constants';
 
 const Side = props => {
-   console.log('size', props);
-
    function renderCustomRadio({name, id, value, settingName}) {
       let checked = value === props.playerSide;
 
@@ -26,15 +25,15 @@ const Side = props => {
          <h6>Choose a side.</h6>
          {renderCustomRadio({
             name: 'customRadioInline',
-            value: 'X',
+            value: FIRST_PLAYER,
             id: 'customRadioInline1',
-            settingName: 'X'
+            settingName: FIRST_PLAYER
          })}
          {renderCustomRadio({
             name: 'customRadioInline',
-            value: 'O',
+            value: SECOND_PLAYER,
             id: 'customRadioInline2',
-            settingName: 'O'
+            settingName: SECOND_PLAYER
          })}
       </React.Fragment>
    );

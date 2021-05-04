@@ -5,3 +5,6 @@ export const ONLINE_MODE = 3;
 export const AI_EASY = 1;
 export const AI_MEDIUM = 2;
 export const AI_HARD = 3;
+
+export const FIRST_PLAYER = 'X';
+export const SECOND_PLAYER = 'O';

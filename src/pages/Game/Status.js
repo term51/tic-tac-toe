@@ -1,5 +1,6 @@
 import React from 'react';
 import {calculateWinner} from '../../helpers/helpers';
+import {FIRST_PLAYER, SECOND_PLAYER} from '../../constants';
 
 const Status = props => {
    const winner = calculateWinner(props.currentSquires);
@@ -11,7 +12,7 @@ const Status = props => {
          props.currentSquires.winner = winner.coordinates;
       }
    } else {
-      status = 'Next player: ' + (props.xIsNext ? 'X' : 'O');
+      status = 'Next player: ' + (props.xIsNext ? FIRST_PLAYER : SECOND_PLAYER);
    }
 
    return (

@@ -1,8 +1,9 @@
 import {calculateWinner} from '../../helpers/helpers';
 import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_SET_STATE, GAME_TOGGLE_SORT} from './actionType';
+import {FIRST_PLAYER, SECOND_PLAYER} from '../../constants';
 
 export function gameSquareClick(coordinates) {
-   console.log(coordinates);
+   // console.log(coordinates);
    return (dispatch, getState) => {
       const state = getState().game;
       const history = state.history.slice(0, state.stepNumber + 1); // delete all "future" history.
@@ -16,7 +17,8 @@ export function gameSquareClick(coordinates) {
       const splitCoordinates = coordinates.split(':');
 
       let squaresRowCopy = squares[splitCoordinates[0]].concat();
-      squaresRowCopy[splitCoordinates[1]] = state.xIsNext ? 'X' : 'O';
+
+      squaresRowCopy[splitCoordinates[1]] = state.xIsNext ? FIRST_PLAYER : SECOND_PLAYER;
       squares[splitCoordinates[0]] = squaresRowCopy;
 
       dispatch(gameSetState(
