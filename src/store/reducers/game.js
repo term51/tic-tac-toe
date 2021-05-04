@@ -1,4 +1,10 @@
-import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_STATE, GAME_TOGGLE_SORT} from '../actions/actionType';
+import {
+   GAME_JUMP_TO,
+   GAME_SAVE_HISTORY,
+   GAME_SET_PLAYER_SIDE,
+   GAME_SET_STATE,
+   GAME_TOGGLE_SORT
+} from '../actions/actionType';
 import {FIELD_SIZES} from '../../config';
 
 const fieldLength = FIELD_SIZES[0].size;
@@ -10,11 +16,12 @@ const initialState = {
       coordinates: null,
       select: false
    }],
+   playerSide: 'X',
    xIsNext: true,
    stepNumber: 0,
    isReverseSort: false
 };
-console.log('initialState', initialState);
+// console.log('initialState', initialState);
 
 export default function gameReducer(state = initialState, action) {
    switch (action.type) {
@@ -31,6 +38,8 @@ export default function gameReducer(state = initialState, action) {
          return {...state, stepNumber: action.step, xIsNext: (action.step % 2) === 0};
       case GAME_SAVE_HISTORY:
          return {...state, history: action.history};
+      case GAME_SET_PLAYER_SIDE:
+         return {...state,playerSide: action.playerSide};
       default:
          return state;
    }
