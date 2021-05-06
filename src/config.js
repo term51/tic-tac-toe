@@ -1,17 +1,21 @@
-import {AI_EASY, AI_HARD, AI_MEDIUM, ONE_PLAYER_MODE, ONLINE_MODE, PLAYER_VS_AI_MODE} from './constants';
+import {
+   AI_EASY, AI_HARD, AI_MEDIUM,
+   ONE_PLAYER_MODE, ONLINE_MODE, PLAYER_VS_AI_MODE,
+   THREE_BY_THREE, FIVE_BY_FIVE, FOUR_BY_FOUR
+} from './constants';
 
 export const FIELD_SIZES = [
       {
          name: '3x3',
-         size: 3,
+         size: THREE_BY_THREE,
       },
       {
          name: '4x4',
-         size:4
+         size: FOUR_BY_FOUR
       },
       {
          name: '5x5',
-         size: 5,
+         size: FIVE_BY_FIVE,
       }
    ]
 ;

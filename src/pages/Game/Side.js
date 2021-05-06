@@ -13,7 +13,7 @@ const Side = props => {
          id={id}
          value={value}
          settingName={settingName}
-         onChange={props.onSetPlayerSide}
+         onChange={props.onChangePlayerSide}
          checked={checked}
          inline={true}
       />;

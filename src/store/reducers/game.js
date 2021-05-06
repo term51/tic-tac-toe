@@ -1,19 +1,11 @@
 import {
-   GAME_JUMP_TO,
-   GAME_SAVE_HISTORY,
-   GAME_SET_PLAYER_SIDE,
-   GAME_SET_STATE,
-   GAME_TOGGLE_SORT
+   GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE, GAME_TOGGLE_SORT
 } from '../actions/actionType';
-import {FIELD_SIZES} from '../../config';
-import {FIRST_PLAYER} from '../../constants';
-
-const fieldLength = FIELD_SIZES[0].size;
+import {FIRST_PLAYER, THREE_BY_THREE} from '../../constants';
 
 const initialState = {
    history: [{
-      // squares: Array(9).fill(null),
-      squares: Array(fieldLength).fill(Array(fieldLength).fill(null)),
+      squares: Array(THREE_BY_THREE).fill(Array(THREE_BY_THREE).fill(null)),
       coordinates: null,
       select: false
    }],
@@ -25,7 +17,7 @@ const initialState = {
 
 export default function gameReducer(state = initialState, action) {
    switch (action.type) {
-      case GAME_SET_STATE:
+      case GAME_MAKE_MOVE:
          return {
             ...state,
             history: action.history,
@@ -39,8 +31,7 @@ export default function gameReducer(state = initialState, action) {
       case GAME_SAVE_HISTORY:
          return {...state, history: action.history};
       case GAME_SET_PLAYER_SIDE:
-         // return {...state,playerSide: action.playerSide, xIsNext: !state.xIsNext};
-         return {...state,playerSide: action.playerSide};
+         return {...state, playerSide: action.playerSide};
       default:
          return state;
    }

@@ -1,3 +1,7 @@
+export const THREE_BY_THREE = 3;
+export const FOUR_BY_FOUR = 4;
+export const FIVE_BY_FIVE = 5;
+
 export const ONE_PLAYER_MODE = 1;
 export const PLAYER_VS_AI_MODE = 2;
 export const ONLINE_MODE = 3;

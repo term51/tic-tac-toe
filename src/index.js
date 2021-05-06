@@ -9,7 +9,7 @@ import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
 import rootReducer from './store/rootReducer';
 import thunk from 'redux-thunk';
-import {AITurnMiddleware} from './middleware/AITurnMiddleware';
+import {AIMiddleware} from './middleware/AIMiddleware';
 
 const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
@@ -17,16 +17,12 @@ const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_E
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(
    thunk,
-    AITurnMiddleware
+   AIMiddleware
 )));
 
 // TODO добавить:
-//  +страницу настроек
-//  +искуственный интелект HARD
-//  +выбор стороны
 //  -задержка перед ходом AI
 //  +-подумать по поводу увеличения клеток
-//  -подумать по поводу переноса класса AI в redux
 //  -обработку ошибок?
 //  -авторизацию
 //  -анимацию

@@ -1,10 +1,9 @@
-import {FIELD_SIZES, GAME_MODES} from '../../config';
 import {SETTING_SET_AI_DIFFICULTY, SETTING_SET_FIELD_SIZE, SETTING_SET_GAME_MODE} from '../actions/actionType';
-import {AI_EASY} from '../../constants';
+import {AI_EASY, ONE_PLAYER_MODE, THREE_BY_THREE} from '../../constants';
 
 const initialState = {
-   fieldSize: FIELD_SIZES[0].size,
-   gameMode: GAME_MODES[0].mode,
+   fieldSize: THREE_BY_THREE,
+   gameMode: ONE_PLAYER_MODE,
    AIDifficulty: AI_EASY
 };
 

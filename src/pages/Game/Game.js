@@ -8,7 +8,7 @@ import {
    gameJumpTo,
    gameToggleSort,
    highlightHistoryButton,
-   gameSetPlayerSide
+   gameChangePlayerSide
 } from '../../store/actions/game';
 import SortButton from './SortButton';
 import Status from './Status';
@@ -40,7 +40,7 @@ class Game extends React.Component {
                         ? <Side
                            playerSide={this.props.playerSide}
                            disabled={this.props.stepNumber > 0}
-                           onSetPlayerSide={this.props.gameSetPlayerSide}
+                           onChangePlayerSide={this.props.gameChangePlayerSide}
                         />
                         : null
                   }
@@ -83,7 +83,8 @@ function mapDispatchToProps(dispatch) {
       gameToggleSort: () => dispatch(gameToggleSort()),
       gameJumpTo: (step) => dispatch(gameJumpTo(step)),
       highlightHistoryButton: (move) => dispatch(highlightHistoryButton(move)),
-      gameSetPlayerSide: (side) => dispatch(gameSetPlayerSide(side))
+      gameChangePlayerSide: (side) => dispatch(gameChangePlayerSide(side))
+      // gameSetPlayerSide: (side) => dispatch(gameSetPlayerSide(side))
    };
 }
 

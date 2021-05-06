@@ -1,16 +1,15 @@
 import {calculateWinner} from '../../helpers/helpers';
-import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_SET_STATE, GAME_TOGGLE_SORT} from './actionType';
+import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE, GAME_TOGGLE_SORT} from './actionType';
 import {FIRST_PLAYER, SECOND_PLAYER} from '../../constants';
 
 export function gameSquareClick(coordinates) {
-   // console.log(coordinates);
    return (dispatch, getState) => {
       const state = getState().game;
-      const history = state.history.slice(0, state.stepNumber + 1); // delete all "future" history.
+      const history = deleteFutureHistory(state);
       const current = history[history.length - 1];
       const squares = current.squares.slice();
 
-      if (calculateWinner(squares) || squares[coordinates.split(':')[0]][coordinates.split(':')[1]]) {
+      if (calculateWinner(squares) || isNotNullSquare(squares, coordinates)) {
          return;
       }
 
@@ -21,7 +20,7 @@ export function gameSquareClick(coordinates) {
       squaresRowCopy[splitCoordinates[1]] = state.xIsNext ? FIRST_PLAYER : SECOND_PLAYER;
       squares[splitCoordinates[0]] = squaresRowCopy;
 
-      dispatch(gameSetState(
+      dispatch(gameMakeMove(
          history.concat([{
             squares,
             coordinates,
@@ -33,9 +32,18 @@ export function gameSquareClick(coordinates) {
    };
 }
 
-export function gameSetState(history) {
+function deleteFutureHistory(state) {
+   return state.history.slice(0, state.stepNumber + 1);
+}
+
+function isNotNullSquare(squares, coordinates) {
+   const splitCoordinates = coordinates.split(':');
+   return squares[splitCoordinates[0]][splitCoordinates[1]];
+}
+
+export function gameMakeMove(history) {
    return {
-      type: GAME_SET_STATE,
+      type: GAME_MAKE_MOVE,
       history
    };
 }
@@ -69,6 +77,15 @@ export function saveGameHistory(history) {
    return {
       type: GAME_SAVE_HISTORY,
       history
+   };
+}
+
+export function gameChangePlayerSide(playerSide) {
+   return (dispatch, getState) => {
+      const state = getState();
+      state.AI.AIPlayer = playerSide === SECOND_PLAYER ? FIRST_PLAYER : SECOND_PLAYER;
+      state.AI.Player = playerSide;
+      dispatch(gameSetPlayerSide(playerSide));
    };
 }
 
