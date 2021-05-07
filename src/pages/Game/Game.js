@@ -13,10 +13,9 @@ import {
 import SortButton from './SortButton';
 import Status from './Status';
 import Moves from './Moves';
-import {calculateWinner} from '../../helpers/helpers';
 import Side from './Side';
 import {PLAYER_VS_AI_MODE} from '../../constants';
-import {createListOfWinningLines} from '../../store/actions/victory';
+import {calculateWinner, createListOfWinningLines} from '../../store/actions/victory';
 
 class Game extends React.Component {
 
@@ -29,7 +28,7 @@ class Game extends React.Component {
    render() {
       const history = this.props.history;
       const current = history[this.props.stepNumber];
-      const winner = calculateWinner(current.squares);
+      const winner = this.props.victoryCalculateWinner(current.squares);
 
       return (
          <GameLayout>
@@ -57,7 +56,7 @@ class Game extends React.Component {
                      onToggleSort={this.props.gameToggleSort}
                   />
                   <Status
-                     currentSquires={current.squares}
+                     winner={winner}
                      xIsNext={this.props.xIsNext}
                   />
                   <Moves
@@ -93,7 +92,8 @@ function mapDispatchToProps(dispatch) {
       gameJumpTo: (step) => dispatch(gameJumpTo(step)),
       highlightHistoryButton: (move) => dispatch(highlightHistoryButton(move)),
       gameChangePlayerSide: (side) => dispatch(gameChangePlayerSide(side)),
-      victoryCreateListOfWinningLines: () => dispatch(createListOfWinningLines())
+      victoryCreateListOfWinningLines: () => dispatch(createListOfWinningLines()),
+      victoryCalculateWinner: (squares) => dispatch(calculateWinner(squares))
    };
 }
 

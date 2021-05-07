@@ -1,5 +1,18 @@
 import {VICTORY_SET_LIST_OF_WINNING_LINES} from './actionType';
 
+/*
+* Creates an array of possible winning lines based on the size of the field, like this one:
+[
+   ['0:0', '0:1', '0:2'],
+   ['1:0', '1:1', '1:2'],
+   ['2:0', '2:1', '2:2'],
+   ['0:0', '1:0', '2:0'],
+   ['0:1', '1:1', '2:1'],
+   ['0:2', '1:2', '2:2'],
+   ['0:0', '1:1', '2:2'],
+   ['0:2', '1:1', '2:0']
+];
+*/
 export function createListOfWinningLines() {
    return (dispatch, getState) => {
       const state = getState().settings;
@@ -45,4 +58,45 @@ export function setListOfWinningLines(listOfWinningLines) {
       type: VICTORY_SET_LIST_OF_WINNING_LINES,
       listOfWinningLines
    };
+}
+
+export function calculateWinner(squares) {
+   return (dispatch, getState) => {
+      const state = getState().victory;
+      const lines = state.listOfWinningLines;
+
+
+      // TODO: передедаь весь метод под большое число ячеек, abc уже не подходит
+      for (let i = 0; i < lines.length; i++) {
+         const [a, b, c] = lines[i];
+         if (isFoundWinningLine(squares, a, b, c)) {
+            return {
+               text: 'Winner: ' + squares[a.split(':')[0]][a.split(':')[1]],
+               coordinates: lines[i]
+            };
+         }
+      }
+
+      if (isDraw(squares)) {
+         return {text: 'Draw'};
+      }
+      return null;
+   };
+}
+
+function isFoundWinningLine(squares, a, b, c) {
+   const splitA = a.split(':');
+   const splitB = b.split(':');
+   const splitC = c.split(':');
+
+   return squares[splitA[0]][splitA[1]]
+      && squares[splitA[0]][splitA[1]]
+      === squares[splitB[0]][splitB[1]]
+      && squares[splitA[0]][splitA[1]]
+      === squares[splitC[0]][splitC[1]];
+}
+
+// TODO 4x4 5x5
+function isDraw(squares) {
+   return !squares[0].includes(null) && !squares[1].includes(null) && !squares[2].includes(null);
 }

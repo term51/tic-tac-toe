@@ -1,6 +1,7 @@
-import {calculateWinner} from '../../helpers/helpers';
+
 import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE, GAME_TOGGLE_SORT} from './actionType';
 import {FIRST_PLAYER, SECOND_PLAYER} from '../../constants';
+import {calculateWinner} from './victory';
 
 export function gameSquareClick(coordinates) {
    return (dispatch, getState) => {
@@ -9,7 +10,7 @@ export function gameSquareClick(coordinates) {
       const current = history[history.length - 1];
       const squares = current.squares.slice();
 
-      if (calculateWinner(squares) || isNotNullSquare(squares, coordinates)) {
+      if (dispatch(calculateWinner(squares)) || isNotNullSquare(squares, coordinates)) {
          return;
       }
 
