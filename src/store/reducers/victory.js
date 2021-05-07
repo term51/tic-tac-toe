@@ -5,7 +5,7 @@ const initialState = {
 };
 
 export default function victoryReducer(state = initialState, action) {
-   switch (action) {
+   switch (action.type) {
       case VICTORY_SET_LIST_OF_WINNING_LINES:
          return {...state, listOfWinningLines: action.listOfWinningLines};
       default:

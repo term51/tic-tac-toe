@@ -10,6 +10,7 @@ import {Provider} from 'react-redux';
 import rootReducer from './store/rootReducer';
 import thunk from 'redux-thunk';
 import {AIMiddleware} from './middleware/AIMiddleware';
+import {settingsMiddleware} from './middleware/settingsMiddleware';
 
 const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
@@ -17,7 +18,8 @@ const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_E
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(
    thunk,
-   AIMiddleware
+   AIMiddleware,
+   settingsMiddleware
 )));
 
 // TODO добавить:

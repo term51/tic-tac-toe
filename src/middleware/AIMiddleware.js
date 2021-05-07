@@ -22,8 +22,6 @@ export const AIMiddleware = store => next => action => {
             if (state.game.xIsNext) store.dispatch(AIMakeMove());
          }
       }
-
-      console.log(state);
    }
 
 

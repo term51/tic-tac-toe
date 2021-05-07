@@ -16,8 +16,16 @@ import Moves from './Moves';
 import {calculateWinner} from '../../helpers/helpers';
 import Side from './Side';
 import {PLAYER_VS_AI_MODE} from '../../constants';
+import {createListOfWinningLines} from '../../store/actions/victory';
 
 class Game extends React.Component {
+
+   componentDidMount() {
+      if (this.props.listOfWinningLines.length === 0) {
+         this.props.victoryCreateListOfWinningLines();
+      }
+   }
+
    render() {
       const history = this.props.history;
       const current = history[this.props.stepNumber];
@@ -65,7 +73,7 @@ class Game extends React.Component {
    }
 }
 
-function mapStateToProps({game, settings}) {
+function mapStateToProps({game, settings, victory}) {
    return {
       history: game.history,
       xIsNext: game.xIsNext,
@@ -73,7 +81,8 @@ function mapStateToProps({game, settings}) {
       isReverseSort: game.isReverseSort,
       playerSide: game.playerSide,
       gameMode: settings.gameMode,
-      fieldSize: settings.fieldSize
+      fieldSize: settings.fieldSize,
+      listOfWinningLines: victory.listOfWinningLines
    };
 }
 
@@ -83,8 +92,8 @@ function mapDispatchToProps(dispatch) {
       gameToggleSort: () => dispatch(gameToggleSort()),
       gameJumpTo: (step) => dispatch(gameJumpTo(step)),
       highlightHistoryButton: (move) => dispatch(highlightHistoryButton(move)),
-      gameChangePlayerSide: (side) => dispatch(gameChangePlayerSide(side))
-      // gameSetPlayerSide: (side) => dispatch(gameSetPlayerSide(side))
+      gameChangePlayerSide: (side) => dispatch(gameChangePlayerSide(side)),
+      victoryCreateListOfWinningLines: () => dispatch(createListOfWinningLines())
    };
 }
 

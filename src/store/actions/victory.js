@@ -1,6 +1,6 @@
 import {VICTORY_SET_LIST_OF_WINNING_LINES} from './actionType';
 
-export function getListOfWinningLines() {
+export function createListOfWinningLines() {
    return (dispatch, getState) => {
       const state = getState().settings;
       const fieldSize = state.fieldSize;
@@ -9,33 +9,34 @@ export function getListOfWinningLines() {
       let rowIndex = 0;
       const maxWays = fieldSize * 2 + 2;
 
-      for (let wayIndex = 0; wayIndex < maxWays; wayIndex++) {
+      for (let lineIndex = 0; lineIndex < maxWays; lineIndex++) {
          if (rowIndex === fieldSize) rowIndex = 0;
-         lines.push(makeRow(fieldSize, rowIndex, wayIndex));
+         lines.push(makeRow(fieldSize, rowIndex, lineIndex));
          rowIndex++;
       }
+      console.log('lines', lines);
       dispatch(setListOfWinningLines(lines));
    };
 }
 
 
-function makeRow(fieldSize, rowIndex, wayIndex) {
+function makeRow(fieldSize, rowIndex, lineIndex) {
    const row = [];
    for (let cellIndex = 0; cellIndex < fieldSize; cellIndex++) {
-      row.push(makeCells(fieldSize, rowIndex, cellIndex, wayIndex));
+      row.push(makeCells(fieldSize, rowIndex, cellIndex, lineIndex));
    }
    return row;
 }
 
-function makeCells(fieldSize, rowIndex, cellIndex, wayIndex) {
-   if (wayIndex < fieldSize) {
+function makeCells(fieldSize, rowIndex, cellIndex, lineIndex) {
+   if (lineIndex < fieldSize) {
       return `${rowIndex}:${cellIndex}`;
-   } else if (wayIndex >= fieldSize && wayIndex < (fieldSize * 2)) {
+   } else if (lineIndex >= fieldSize && lineIndex < (fieldSize * 2)) {
       return `${cellIndex}:${rowIndex}`;
-   } else if (wayIndex === (fieldSize * 2)) {
+   } else if (lineIndex === (fieldSize * 2)) {
       return `${cellIndex}:${cellIndex}`;
    } else {
-      return `${cellIndex}:${2 - cellIndex}`;
+      return `${cellIndex}:${(fieldSize - 1) - cellIndex}`;
    }
 }
 
