@@ -20,9 +20,10 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(
    thunk,
    AIMiddleware,
    settingsMiddleware
+
 )));
 
-// TODO добавить:
+// TODO добавить: ыв
 //  -задержка перед ходом AI
 //  +-подумать по поводу увеличения клеток
 //  -обработку ошибок?
