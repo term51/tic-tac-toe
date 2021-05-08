@@ -1,6 +1,12 @@
-
-import {GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE, GAME_TOGGLE_SORT} from './actionType';
-import {FIRST_PLAYER, SECOND_PLAYER} from '../../constants';
+import {
+   GAME_JUMP_TO,
+   GAME_SAVE_HISTORY,
+   GAME_SET_PLAYER_SIDE,
+   GAME_MAKE_MOVE,
+   GAME_TOGGLE_SORT,
+   GAME_RESET_STATE
+} from './actionType';
+import {FIRST_PLAYER, FIVE_BY_FIVE, FOUR_BY_FOUR, SECOND_PLAYER, THREE_BY_THREE} from '../../constants';
 import {calculateWinner} from './victory';
 
 export function gameSquareClick(coordinates) {
@@ -70,11 +76,11 @@ export function highlightHistoryButton(move) {
          item.select = move === index;
       });
 
-      dispatch(saveGameHistory(history));
+      dispatch(gameSaveHistory(history));
    };
 }
 
-export function saveGameHistory(history) {
+export function gameSaveHistory(history) {
    return {
       type: GAME_SAVE_HISTORY,
       history
@@ -94,5 +100,37 @@ export function gameSetPlayerSide(playerSide) {
    return {
       type: GAME_SET_PLAYER_SIDE,
       playerSide
+   };
+}
+
+export function gameChangeFieldSize() {
+   return (dispatch, getState) => {
+      const state = getState();
+      const history = [{
+         squares: [],
+         coordinates: null,
+         select: false
+      }];
+
+      const fieldSize = state.settings.fieldSize;
+
+      if (fieldSize === THREE_BY_THREE) {
+         history[0].squares = Array(THREE_BY_THREE).fill(Array(THREE_BY_THREE).fill(null));
+      }
+      if (fieldSize === FOUR_BY_FOUR) {
+         history[0].squares = Array(FOUR_BY_FOUR).fill(Array(FOUR_BY_FOUR).fill(null));
+      }
+      if (fieldSize === FIVE_BY_FIVE) {
+         history[0].squares = Array(FIVE_BY_FIVE).fill(Array(FIVE_BY_FIVE).fill(null));
+      }
+
+      dispatch(gameResetState(history));
+   };
+}
+
+export function gameResetState(history) {
+   return {
+      type: GAME_RESET_STATE,
+      history
    };
 }

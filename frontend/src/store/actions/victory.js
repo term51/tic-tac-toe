@@ -65,13 +65,12 @@ export function calculateWinner(squares) {
       const state = getState().victory;
       const lines = state.listOfWinningLines;
 
-
-      // TODO: передедаь весь метод под большое число ячеек, abc уже не подходит
       for (let i = 0; i < lines.length; i++) {
-         const [a, b, c] = lines[i];
-         if (isFoundWinningLine(squares, a, b, c)) {
+         // const [a, b, c, d, e] = lines[i];
+         // if (isFoundWinningLine(squares, a, b, c))
+         if (isFoundWinningLine(squares, lines[i])) {
             return {
-               text: 'Winner: ' + squares[a.split(':')[0]][a.split(':')[1]],
+               text: 'Winner: ' + squares[lines[i][0].split(':')[0]][lines[i][0].split(':')[1]],
                coordinates: lines[i]
             };
          }
@@ -84,19 +83,73 @@ export function calculateWinner(squares) {
    };
 }
 
-function isFoundWinningLine(squares, a, b, c) {
-   const splitA = a.split(':');
-   const splitB = b.split(':');
-   const splitC = c.split(':');
+// TODO refactor
+function isFoundWinningLine(squares, line) {
 
-   return squares[splitA[0]][splitA[1]]
-      && squares[splitA[0]][splitA[1]]
-      === squares[splitB[0]][splitB[1]]
-      && squares[splitA[0]][splitA[1]]
-      === squares[splitC[0]][splitC[1]];
+   if (squares.length === 3) {
+      const [a, b, c] = line;
+      const splitA = a.split(':');
+      const splitB = b.split(':');
+      const splitC = c.split(':');
+
+      return squares[splitA[0]][splitA[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitB[0]][splitB[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitC[0]][splitC[1]];
+   } else if (squares.length === 4) {
+      const [a, b, c, d] = line;
+      const splitA = a.split(':');
+      const splitB = b.split(':');
+      const splitC = c.split(':');
+      const splitD = d.split(':');
+
+      return squares[splitA[0]][splitA[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitB[0]][splitB[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitC[0]][splitC[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitD[0]][splitD[1]];
+
+   } else {
+      const [a, b, c, d, e] = line;
+      const splitA = a.split(':');
+      const splitB = b.split(':');
+      const splitC = c.split(':');
+      const splitD = d.split(':');
+      const splitE = e.split(':');
+
+      return squares[splitA[0]][splitA[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitB[0]][splitB[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitC[0]][splitC[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitD[0]][splitD[1]]
+         && squares[splitA[0]][splitA[1]]
+         === squares[splitE[0]][splitE[1]];
+   }
+
+
 }
-
-// TODO 4x4 5x5
+// TODO refactor
 function isDraw(squares) {
-   return !squares[0].includes(null) && !squares[1].includes(null) && !squares[2].includes(null);
+   if (squares.length === 3) {
+      return !squares[0].includes(null)
+         && !squares[1].includes(null)
+         && !squares[2].includes(null);
+   } else if (squares.length === 4) {
+      return !squares[0].includes(null)
+         && !squares[1].includes(null)
+         && !squares[2].includes(null)
+         && !squares[3].includes(null);
+   } else {
+      return !squares[0].includes(null)
+         && !squares[1].includes(null)
+         && !squares[2].includes(null)
+         && !squares[3].includes(null)
+         && !squares[4].includes(null);
+   }
+
 }

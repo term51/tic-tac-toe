@@ -1,5 +1,5 @@
 import {
-   GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE, GAME_TOGGLE_SORT
+   GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE, GAME_TOGGLE_SORT, GAME_RESET_STATE
 } from '../actions/actionType';
 import {FIRST_PLAYER, THREE_BY_THREE} from '../../constants';
 
@@ -32,6 +32,8 @@ export default function gameReducer(state = initialState, action) {
          return {...state, history: action.history};
       case GAME_SET_PLAYER_SIDE:
          return {...state, playerSide: action.playerSide};
+      case GAME_RESET_STATE:
+         return {...state, history: action.history, playerSide: FIRST_PLAYER, stepNumber: 0, xIsNext: true};
       default:
          return state;
    }

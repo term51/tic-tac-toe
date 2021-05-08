@@ -23,13 +23,13 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(
 
 )));
 
-// TODO добавить: ыв
+// TODO добавить:
 //  -задержка перед ходом AI
-//  +-подумать по поводу увеличения клеток
 //  -обработку ошибок?
 //  -авторизацию
 //  -анимацию
 //  -рефакторинг
+//  -возможно стоит создать функцию конфигурации при первом запуске
 
 ReactDOM.render(
    <React.StrictMode>

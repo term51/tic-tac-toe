@@ -225,9 +225,12 @@ function setCurrentIndex(currentIndex) {
 }
 
 function getHorizontalWay(coordinates) {
-   return (dispatch) => {
+   return (dispatch, getState) => {
+      //TODO рефактор создать функцию для получения fieldsize
+      const state = getState().settings;
+      const fieldSize = state.fieldSize;
       const way = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < fieldSize; i++) {
          if (dispatch(isEnemy(coordinates, i))) return;
          way.push(`${coordinates}:${i}`);
       }
@@ -236,9 +239,11 @@ function getHorizontalWay(coordinates) {
 }
 
 function getVerticalWay(coordinates) {
-   return (dispatch) => {
+   return (dispatch, getState) => {
+      const state = getState().settings;
+      const fieldSize = state.fieldSize;
       const way = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < fieldSize; i++) {
          if (dispatch(isEnemy(i, coordinates))) return;
          way.push(`${i}:${coordinates}`);
       }
@@ -247,9 +252,11 @@ function getVerticalWay(coordinates) {
 }
 
 function getFirstDiagonalWay(coordinates) {
-   return (dispatch) => {
+   return (dispatch, getState) => {
+      const state = getState().settings;
+      const fieldSize = state.fieldSize;
       const firstDiagonal = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < fieldSize; i++) {
          if (dispatch(isEnemy(i, i))) return;
          firstDiagonal.push(`${i}:${i}`);
       }
@@ -260,11 +267,14 @@ function getFirstDiagonalWay(coordinates) {
 }
 
 function getSecondDiagonalWay(coordinates) {
-   return (dispatch) => {
+   return (dispatch, getState) => {
+      const state = getState().settings;
+      const fieldSize = state.fieldSize;
+      const lastFieldIndex = fieldSize - 1;
       const secondDiagonal = [];
-      for (let i = 0; i < 3; i++) {
-         if (dispatch(isEnemy(i, 2 - i))) return;
-         secondDiagonal.push(`${i}:${2 - i}`);
+      for (let i = 0; i < fieldSize; i++) {
+         if (dispatch(isEnemy(i, lastFieldIndex - i))) return;
+         secondDiagonal.push(`${i}:${lastFieldIndex - i}`);
       }
 
       if (isWayIncludeTheCoordinates(secondDiagonal, coordinates)) {
