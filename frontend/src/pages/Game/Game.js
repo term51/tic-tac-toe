@@ -7,21 +7,21 @@ import {
    gameSquareClick,
    gameJumpTo,
    gameToggleSort,
-   highlightHistoryButton,
-   gameChangePlayerSide
+   gameHighlightHistoryButton,
+   gameChangePlayerSide, gameFirstRunConfiguration
 } from '../../store/actions/game';
 import SortButton from './SortButton';
 import Status from './Status';
 import Moves from './Moves';
 import Side from './Side';
 import {PLAYER_VS_AI_MODE} from '../../constants';
-import {calculateWinner, createListOfWinningLines} from '../../store/actions/victory';
+import {calculateWinner} from '../../store/actions/victory';
 
 class Game extends React.Component {
-
-   componentDidMount() {
-      if (this.props.listOfWinningLines.length === 0) {
-         this.props.victoryCreateListOfWinningLines();
+   constructor(props) {
+      super(props);
+      if (!this.props.isAppConfigured) {
+         this.props.gameFirstRunConfiguration();
       }
    }
 
@@ -61,7 +61,7 @@ class Game extends React.Component {
                   />
                   <Moves
                      onJumpTo={this.props.gameJumpTo}
-                     onHighlight={this.props.highlightHistoryButton}
+                     onHighlight={this.props.gameHighlightHistoryButton}
                      history={this.props.history}
                      isReverseSort={this.props.isReverseSort}
                   />
@@ -79,6 +79,7 @@ function mapStateToProps({game, settings, victory}) {
       stepNumber: game.stepNumber,
       isReverseSort: game.isReverseSort,
       playerSide: game.playerSide,
+      isAppConfigured: game.isAppConfigured,
       gameMode: settings.gameMode,
       fieldSize: settings.fieldSize,
       listOfWinningLines: victory.listOfWinningLines
@@ -90,9 +91,9 @@ function mapDispatchToProps(dispatch) {
       gameSquareClick: coordinates => dispatch(gameSquareClick(coordinates)),
       gameToggleSort: () => dispatch(gameToggleSort()),
       gameJumpTo: (step) => dispatch(gameJumpTo(step)),
-      highlightHistoryButton: (move) => dispatch(highlightHistoryButton(move)),
+      gameFirstRunConfiguration: () => dispatch(gameFirstRunConfiguration()),
+      gameHighlightHistoryButton: (move) => dispatch(gameHighlightHistoryButton(move)),
       gameChangePlayerSide: (side) => dispatch(gameChangePlayerSide(side)),
-      victoryCreateListOfWinningLines: () => dispatch(createListOfWinningLines()),
       victoryCalculateWinner: (squares) => dispatch(calculateWinner(squares))
    };
 }

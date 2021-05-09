@@ -11,11 +11,9 @@ import {gameSquareClick} from './game';
 
 export function AIMakeMove() {
    return (dispatch, getState) => {
-      dispatch(parseTheField());
-
+      dispatch(getPlayersUnits());
       const state = getState();
       const AIPossibleMoves = state.AI.availableMoves;
-
       if (isAvailableMoves(AIPossibleMoves)) {
          const AIChoice = dispatch(AIMakeChoice());
          dispatch(gameSquareClick(AIPossibleMoves[AIChoice]));
@@ -32,42 +30,45 @@ function clearWayList() {
    };
 }
 
-// TODO: Shorten the method
-function parseTheField() {
+function getPlayersUnits() {
    return (dispatch, getState) => {
       const state = getState().game;
-      const field = state.history[state.stepNumber].squares;
-      const firstPlayerUnits = [], secondPlayerUnits = [], availableMoves = [];
-
-      field.forEach((row, rowIndex) => {
-         row.forEach((cell, cellIndex) => {
-            if (cell === FIRST_PLAYER) {
-               firstPlayerUnits.push({
-                  coordinates: rowIndex + ':' + cellIndex,
-                  ways: []
-               });
-            }
-            if (cell === SECOND_PLAYER) {
-               secondPlayerUnits.push({
-                  coordinates: rowIndex + ':' + cellIndex,
-                  ways: []
-               });
-            }
-            if (cell === null) {
-               availableMoves.push(`${rowIndex}:${cellIndex}`);
-            }
-         });
-      });
-
+      const args = {
+         field: state.history[state.stepNumber].squares,
+         firstPlayerUnits: [], secondPlayerUnits: [], availableMoves: []
+      };
+      parseTheField(args);
       if (state.playerSide === FIRST_PLAYER) {
-         dispatch(setPlayerUnits(firstPlayerUnits));
-         dispatch(setAIPlayerUnits(secondPlayerUnits));
+         dispatch(setPlayerUnits(args.firstPlayerUnits));
+         dispatch(setAIPlayerUnits(args.secondPlayerUnits));
       } else {
-         dispatch(setAIPlayerUnits(firstPlayerUnits));
-         dispatch(setPlayerUnits(secondPlayerUnits));
+         dispatch(setAIPlayerUnits(args.firstPlayerUnits));
+         dispatch(setPlayerUnits(args.secondPlayerUnits));
       }
-      dispatch(setAvailableMoves(availableMoves));
+      dispatch(setAvailableMoves(args.availableMoves));
    };
+}
+
+function parseTheField(args) {
+   args.field.forEach((row, rowIndex) => {
+      row.forEach((cell, cellIndex) => {
+         if (cell === FIRST_PLAYER) {
+            args.firstPlayerUnits.push({
+               coordinates: rowIndex + ':' + cellIndex,
+               ways: []
+            });
+         }
+         if (cell === SECOND_PLAYER) {
+            args.secondPlayerUnits.push({
+               coordinates: rowIndex + ':' + cellIndex,
+               ways: []
+            });
+         }
+         if (cell === null) {
+            args.availableMoves.push(`${rowIndex}:${cellIndex}`);
+         }
+      });
+   });
 }
 
 function setAIPlayerUnits(playerUnits) {
@@ -100,7 +101,6 @@ function AIMakeChoice() {
       const state = getState();
       const availableMoves = state.AI.availableMoves;
       const AIDifficulty = state.settings.AIDifficulty;
-
       if (AIDifficulty === AI_EASY) return makeEasyChoice(availableMoves);
       if (isFirstTimeChoice(state.AI.AIPlayerUnits)) return dispatch(makeMoveInCenter(availableMoves));
       if (AIDifficulty === AI_MEDIUM) return dispatch(makeMediumChoice(availableMoves));
@@ -124,21 +124,20 @@ function makeMoveInCenter(moves) {
    return (dispatch, getState) => {
       const state = getState();
       const field = state.game.history[state.game.stepNumber].squares;
-      const center = getCenterCoordinates(state.settings.fieldSize);
+      const center = dispatch(getCenterCoordinates());
       if (field[center][center] === null) {
          return moves.indexOf(`${center}:${center}`);
       }
       const cornerCoordinates = dispatch(getCornerCoordinates(moves));
       const randomIndex = getRandomChoice(cornerCoordinates);
       return moves.indexOf(cornerCoordinates[randomIndex]);
-      // return getRandomChoice(moves);
    };
 }
 
 function getCornerCoordinates(moves) {
-   return (dispatch, getState) => {
-      const state = getState();
-      const maxSize = state.settings.fieldSize - 1;
+   return (dispatch) => {
+      const fieldSize = dispatch(getFieldSize());
+      const maxSize = fieldSize - 1;
       const minSize = 0;
       const cornerCoordinates = [];
       moves.forEach(item => {
@@ -157,8 +156,11 @@ function getCornerCoordinates(moves) {
    };
 }
 
-function getCenterCoordinates(fieldSize) {
-   return Math.floor(fieldSize / 2);
+function getCenterCoordinates() {
+   return dispatch => {
+      const fieldSize = dispatch(getFieldSize());
+      return Math.floor(fieldSize / 2);
+   };
 }
 
 function makeMediumChoice(moves) {
@@ -167,7 +169,6 @@ function makeMediumChoice(moves) {
       dispatch(getAllWays(state.AIPlayerUnits, state.Player));
       dispatch(calculateWaypoints(state.AIPlayerUnits));
       const bestPossibleMoves = dispatch(getWayWithMaximumPoints());
-
       for (let i = 0; i < bestPossibleMoves.length; i++) {
          if (moves.includes(bestPossibleMoves[i])) return moves.indexOf(bestPossibleMoves[i]);
       }
@@ -178,19 +179,14 @@ function makeMediumChoice(moves) {
 function makeHardChoice(moves) {
    return (dispatch, getState) => {
       const state = getState().AI;
-      // TODO оптимизировать при переносе в redux
       dispatch(getAllWays(state.AIPlayerUnits, state.Player));
       dispatch(getAllWays(state.PlayerUnits, state.AIPlayer));
-
       dispatch(calculateWaypoints(state.AIPlayerUnits));
       dispatch(calculateWaypoints(state.PlayerUnits));
-
       const bestPossibleMoves = dispatch(getWayWithMaximumPoints());
-
       for (let i = 0; i < bestPossibleMoves.length; i++) {
          if (moves.includes(bestPossibleMoves[i])) return moves.indexOf(bestPossibleMoves[i]);
       }
-
       return getRandomChoice(moves);
    };
 }
@@ -224,11 +220,15 @@ function setCurrentIndex(currentIndex) {
    };
 }
 
-function getHorizontalWay(coordinates) {
+function getFieldSize() {
    return (dispatch, getState) => {
-      //TODO рефактор создать функцию для получения fieldsize
-      const state = getState().settings;
-      const fieldSize = state.fieldSize;
+      return getState().settings.fieldSize;
+   };
+}
+
+function getHorizontalWay(coordinates) {
+   return (dispatch) => {
+      const fieldSize = dispatch(getFieldSize());
       const way = [];
       for (let i = 0; i < fieldSize; i++) {
          if (dispatch(isEnemy(coordinates, i))) return;
@@ -239,9 +239,8 @@ function getHorizontalWay(coordinates) {
 }
 
 function getVerticalWay(coordinates) {
-   return (dispatch, getState) => {
-      const state = getState().settings;
-      const fieldSize = state.fieldSize;
+   return (dispatch) => {
+      const fieldSize = dispatch(getFieldSize());
       const way = [];
       for (let i = 0; i < fieldSize; i++) {
          if (dispatch(isEnemy(i, coordinates))) return;
@@ -252,9 +251,8 @@ function getVerticalWay(coordinates) {
 }
 
 function getFirstDiagonalWay(coordinates) {
-   return (dispatch, getState) => {
-      const state = getState().settings;
-      const fieldSize = state.fieldSize;
+   return (dispatch) => {
+      const fieldSize = dispatch(getFieldSize());
       const firstDiagonal = [];
       for (let i = 0; i < fieldSize; i++) {
          if (dispatch(isEnemy(i, i))) return;
@@ -267,9 +265,8 @@ function getFirstDiagonalWay(coordinates) {
 }
 
 function getSecondDiagonalWay(coordinates) {
-   return (dispatch, getState) => {
-      const state = getState().settings;
-      const fieldSize = state.fieldSize;
+   return (dispatch) => {
+      const fieldSize = dispatch(getFieldSize());
       const lastFieldIndex = fieldSize - 1;
       const secondDiagonal = [];
       for (let i = 0; i < fieldSize; i++) {

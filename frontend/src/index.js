@@ -26,10 +26,8 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(
 // TODO добавить:
 //  -задержка перед ходом AI
 //  -обработку ошибок?
-//  -авторизацию
-//  -анимацию
-//  -рефакторинг
-//  -возможно стоит создать функцию конфигурации при первом запуске
+//  -авторизацию (после курса по node)
+//  -?анимацию (ходов, победы)
 
 ReactDOM.render(
    <React.StrictMode>

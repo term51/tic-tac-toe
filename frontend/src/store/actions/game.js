@@ -1,13 +1,27 @@
 import {
-   GAME_JUMP_TO,
-   GAME_SAVE_HISTORY,
-   GAME_SET_PLAYER_SIDE,
-   GAME_MAKE_MOVE,
-   GAME_TOGGLE_SORT,
-   GAME_RESET_STATE
+   GAME_JUMP_TO, GAME_SAVE_HISTORY, GAME_SET_PLAYER_SIDE, GAME_MAKE_MOVE,
+   GAME_TOGGLE_SORT, GAME_RESET_STATE, GAME_APP_IS_CONFIGURED
 } from './actionType';
 import {FIRST_PLAYER, FIVE_BY_FIVE, FOUR_BY_FOUR, SECOND_PLAYER, THREE_BY_THREE} from '../../constants';
-import {calculateWinner} from './victory';
+import {calculateWinner, createListOfWinningLines} from './victory';
+
+export function gameFirstRunConfiguration() {
+   return (dispatch, getState) => {
+      const state = getState();
+      const fieldSize = state.settings.fieldSize;
+      const history = state.game.history;
+      history[0].squares = getArrayOfNullValuesByFieldSize(fieldSize);
+      dispatch(gameSaveHistory(history));
+      dispatch(createListOfWinningLines());
+      dispatch(appIsConfigured());
+   };
+}
+
+export function appIsConfigured() {
+   return {
+      type: GAME_APP_IS_CONFIGURED
+   };
+}
 
 export function gameSquareClick(coordinates) {
    return (dispatch, getState) => {
@@ -15,27 +29,28 @@ export function gameSquareClick(coordinates) {
       const history = deleteFutureHistory(state);
       const current = history[history.length - 1];
       const squares = current.squares.slice();
-
       if (dispatch(calculateWinner(squares)) || isNotNullSquare(squares, coordinates)) {
          return;
       }
+      dispatch(markThePlayerCell(squares, coordinates));
 
-      const splitCoordinates = coordinates.split(':');
-
-      let squaresRowCopy = squares[splitCoordinates[0]].concat();
-
-      squaresRowCopy[splitCoordinates[1]] = state.xIsNext ? FIRST_PLAYER : SECOND_PLAYER;
-      squares[splitCoordinates[0]] = squaresRowCopy;
-
-      dispatch(gameMakeMove(
-         history.concat([{
-            squares,
-            coordinates,
+      dispatch(gameMakeMove(history.concat([{
+            squares, coordinates,
             select: false
          }])
       ));
 
-      dispatch(highlightHistoryButton());
+      dispatch(gameHighlightHistoryButton());
+   };
+}
+
+function markThePlayerCell(squares, coordinates) {
+   return (dispatch, getState) => {
+      const state = getState().game;
+      const splitCoordinates = coordinates.split(':');
+      const squaresRowCopy = squares[splitCoordinates[0]].concat();
+      squaresRowCopy[splitCoordinates[1]] = state.xIsNext ? FIRST_PLAYER : SECOND_PLAYER;
+      squares[splitCoordinates[0]] = squaresRowCopy;
    };
 }
 
@@ -68,7 +83,7 @@ export function gameJumpTo(step) {
    };
 }
 
-export function highlightHistoryButton(move) {
+export function gameHighlightHistoryButton(move) {
    return (dispatch, getState) => {
       const state = getState().game;
       const history = [...state.history];
@@ -111,21 +126,20 @@ export function gameChangeFieldSize() {
          coordinates: null,
          select: false
       }];
-
       const fieldSize = state.settings.fieldSize;
-
-      if (fieldSize === THREE_BY_THREE) {
-         history[0].squares = Array(THREE_BY_THREE).fill(Array(THREE_BY_THREE).fill(null));
-      }
-      if (fieldSize === FOUR_BY_FOUR) {
-         history[0].squares = Array(FOUR_BY_FOUR).fill(Array(FOUR_BY_FOUR).fill(null));
-      }
-      if (fieldSize === FIVE_BY_FIVE) {
-         history[0].squares = Array(FIVE_BY_FIVE).fill(Array(FIVE_BY_FIVE).fill(null));
-      }
-
+      history[0].squares = getArrayOfNullValuesByFieldSize(fieldSize);
       dispatch(gameResetState(history));
    };
+}
+
+function getArrayOfNullValuesByFieldSize(size) {
+   if (size === FOUR_BY_FOUR) {
+      return Array(FOUR_BY_FOUR).fill(Array(FOUR_BY_FOUR).fill(null));
+   }
+   if (size === FIVE_BY_FIVE) {
+      return Array(FIVE_BY_FIVE).fill(Array(FIVE_BY_FIVE).fill(null));
+   }
+   return Array(THREE_BY_THREE).fill(Array(THREE_BY_THREE).fill(null));
 }
 
 export function gameResetState(history) {

@@ -66,8 +66,6 @@ export function calculateWinner(squares) {
       const lines = state.listOfWinningLines;
 
       for (let i = 0; i < lines.length; i++) {
-         // const [a, b, c, d, e] = lines[i];
-         // if (isFoundWinningLine(squares, a, b, c))
          if (isFoundWinningLine(squares, lines[i])) {
             return {
                text: 'Winner: ' + squares[lines[i][0].split(':')[0]][lines[i][0].split(':')[1]],
@@ -97,6 +95,7 @@ function isFoundWinningLine(squares, line) {
          === squares[splitB[0]][splitB[1]]
          && squares[splitA[0]][splitA[1]]
          === squares[splitC[0]][splitC[1]];
+
    } else if (squares.length === 4) {
       const [a, b, c, d] = line;
       const splitA = a.split(':');
